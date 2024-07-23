@@ -295,6 +295,9 @@
             </xsl:attribute>
             <xsl:apply-templates mode="#current"/>
         </xsl:element>
+    <xsl:if test="@hand">
+            <xsl:call-template name="popover"/>
+        </xsl:if>
     </xsl:template>
     
     <!--  Hier mit priority 0.5, da in Briefen und Tagebüchern unterschiedlich behandelt  -->
