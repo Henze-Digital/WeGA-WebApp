@@ -701,6 +701,16 @@ declare function api:validate-biblioType($model as map(*)) as map(*)? {
 }; 
 
 (:~
+ : Check parameter workType
+ : multiple values allowed as input, either by providing multiple URL parameters
+ : or by sending a comma separated list as the value of one URL parameter
+~:)
+declare function api:validate-workType($model as map(*)) as map(*)? {
+    if(every $i in $model?workType ! tokenize(., ',') satisfies config:is-workType($i)) then map { 'workType': $model?workType ! tokenize(., ',') }
+    else error($api:INVALID_PARAMETER, 'Unsupported value for parameter "workType". It must be a valid workType, e.g. "music" or "film".' )
+};
+
+(:~
  : Check parameter editors
  : multiple values allowed as input, either by providing multiple URL parameters
  : or by sending a comma separated list as the value of one URL parameter
