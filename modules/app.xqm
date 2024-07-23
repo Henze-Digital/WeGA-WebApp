@@ -1591,6 +1591,8 @@ declare
             'generalRemark' : query:generalRemark($model('doc')),
             'authors' : if (count(query:get-author-element($model('doc'))) > 1 ) then
                 for $author in query:get-author-element($model('doc')) return app:printCorrespondentName($author,$lang,'fs') else (),
+            'editors' : if (count(query:get-editor-element($model('doc'))) > 0 ) then
+                for $editor in query:get-editor-element($model('doc')) return app:printCorrespondentName($editor,$lang,'fs') else (),
             'respStmts': 
                 switch($model('docType'))
                 case 'diaries' return (
