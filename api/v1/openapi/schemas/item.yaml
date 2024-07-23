@@ -36,6 +36,7 @@ properties:
             - author
             - sender
             - recipient
+            - corresp
             - place_of_sender
             - place_of_recipient
   date:

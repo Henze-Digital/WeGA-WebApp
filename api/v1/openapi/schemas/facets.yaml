@@ -6,6 +6,7 @@ enum:
   - authors
   - biblioType
   - composers
+  - corresp
   - dedicatees
   - docLang
   - docSource
