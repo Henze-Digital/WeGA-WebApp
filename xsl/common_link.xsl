@@ -124,7 +124,13 @@
     
     <xsl:template match="@key[not(matches(., '\s'))] | @codedval[not(matches(., '\s'))]">
         <xsl:attribute name="href" select="wega:createLinkToDoc(., $lang)"/>
-    </xsl:template>
+    <xsl:attribute name="certainty">
+			<xsl:choose>
+				<xsl:when test="parent::node()/@cert"><xsl:value-of select="concat('(', wega:getLanguageString(concat('cert.',parent::node()/@cert), $lang),')')"/></xsl:when>
+				<xsl:otherwise/>
+			</xsl:choose>
+		</xsl:attribute>
+	</xsl:template>
 
     <xsl:template name="createLink">
         <xsl:choose>
