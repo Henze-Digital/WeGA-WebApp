@@ -492,7 +492,13 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
         if(config:is-org($model('docID'))) then 'org'
         else if(config:is-place($model('docID'))) then 'place'
         else if($model('doc')//mei:term/data(@class) = 'http://d-nb.info/standards/elementset/gnd#MusicalWork') then 'musicalWork'
-        else if(config:is-work($model('docID')) and not($model('doc')//mei:term/data(@class) = 'http://d-nb.info/standards/elementset/gnd#MusicalWork')) then 'otherWork'
+        else if(config:is-work($model('docID')) and hwh-util:get-work-type($model('docID')) = 'music') then 'musicalWork'
+        else if(config:is-work($model('docID')) and hwh-util:get-work-type($model('docID')) = 'tape') then 'tape'
+        else if(config:is-work($model('docID')) and hwh-util:get-work-type($model('docID')) = 'cd') then 'compactDisc'
+        else if(config:is-work($model('docID')) and hwh-util:get-work-type($model('docID')) = 'film') then 'film'
+        else if(config:is-work($model('docID')) and hwh-util:get-work-type($model('docID')) = 'lp') then 'longPlay'
+        else if(config:is-work($model('docID')) and $model('doc')//tei:biblStruct[@type='painting']) then 'painting'
+		else if(config:is-work($model('docID')) and not($model('doc')//mei:term/data(@class) = 'http://d-nb.info/standards/elementset/gnd#MusicalWork')) then 'otherWork'
         else $model('doc')//tei:sex/text()
     let $caption :=
         if(config:is-person($model('docID')))
@@ -512,7 +518,12 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
                     case 'org' return config:link-to-current-app('resources/img/icons/icon_orgs.png')
                     case 'place' return config:link-to-current-app('resources/img/icons/icon_places.png')
                     case 'musicalWork' return config:link-to-current-app('resources/img/icons/icon_musicalWorks.png')
+                    case 'tape' return config:link-to-current-app('resources/img/icons/icon_tape.svg')
+                    case 'film' return config:link-to-current-app('resources/img/icons/icon_film.svg')
+                    case 'longPlay' return config:link-to-current-app('resources/img/icons/icon_vinyl.svg')
+                    case 'compactDisc' return config:link-to-current-app('resources/img/icons/icon_compactDisc.svg')
                     case 'otherWork' return config:link-to-current-app('resources/img/icons/icon_works.png')
+                    case 'painting' return config:link-to-current-app('resources/img/icons/icon_painting.svg')
                     default return config:link-to-current-app('resources/img/icons/icon_persons.png')
                 default return 
                     switch($sex)
@@ -521,7 +532,12 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
                     case 'org' return config:link-to-current-app('resources/img/icons/icon_orgs_gross.png')
                     case 'place' return config:link-to-current-app('resources/img/icons/icon_places_gross.png')
                     case 'musicalWork' return config:link-to-current-app('resources/img/icons/icon_musicalWorks_gross.png')
+                    case 'tape' return config:link-to-current-app('resources/img/icons/icon_tape.svg')
+                    case 'film' return config:link-to-current-app('resources/img/icons/icon_film.svg')
+                    case 'longPlay' return config:link-to-current-app('resources/img/icons/icon_vinyl.svg')
+                    case 'compactDisc' return config:link-to-current-app('resources/img/icons/icon_compactDisc.svg')
                     case 'otherWork' return config:link-to-current-app('resources/img/icons/icon_works_gross.png')
+                    case 'painting' return config:link-to-current-app('resources/img/icons/icon_painting.svg')
                     default return config:link-to-current-app('resources/img/icons/icon_person_unbekannt_gross.png')
             }
         }
