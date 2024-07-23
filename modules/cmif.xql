@@ -25,7 +25,14 @@ declare variable $ct:source-uuid := config:get-option('cmifID');
 declare variable $ct:last-modified as xs:dateTime? := 
     if($config:svn-change-history-file/dictionary/@dateTime castable as xs:dateTime) 
     then $config:svn-change-history-file/dictionary/xs:dateTime(@dateTime)
-    else ();
+    else (
+        let $versionDateSeq := tokenize(config:get-option('versionDate'),'-')
+        let $year := subsequence($versionDateSeq,1,1)
+        let $month := subsequence($versionDateSeq,2,1)
+        let $day := subsequence($versionDateSeq,3,1)
+        return
+            functx:dateTime($year,$month,$day,0,0,0)
+     );
 declare variable $ct:etag as xs:string? := 
     if(exists($ct:last-modified))
     then util:hash($ct:last-modified, 'md5')
