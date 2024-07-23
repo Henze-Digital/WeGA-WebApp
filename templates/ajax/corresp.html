@@ -1,0 +1,17 @@
+<div xmlns="http://www.w3.org/1999/xhtml" class="row" data-template="search:results" data-template-docType="corresp">
+    <div class="col-md-3 order-2 side-col">
+        <h2>
+            <a href="#allFilter" class="collapseSingle" aria-expanded="true" data-toggle="collapse">
+                <span data-template="lang:translate">filter</span>
+            </a>
+        </h2>
+        <!-- Facetten Filter-->
+        <div class="allFilter panel-collapse collapse show" id="allFilter">
+            <h4 data-template="lang:translate">sender</h4>
+            <select multiple="multiple" data-template="facets:select" name="sender"/>
+            <h4 data-template="lang:translate">addressees</h4>
+            <select multiple="multiple" data-template="facets:select" name="addressee"/>
+        </div>
+    </div>
+    <div data-template="templates:include" data-template-path="templates/includes/search-results.html"/>
+</div>
