@@ -273,6 +273,72 @@ declare function wdt:personsPlus($item as item()*) as map(*) {
     }
 };
 
+declare function wdt:translations($item as item()*) as map(*) {
+    let $text-types := tokenize(config:get-option('textTypes'), '\s+')
+    let $constructTranslationHead := function($TEI as element(tei:TEI)) as element(tei:title) {
+        let $id := $TEI/data(@xml:id)
+        let $lang := config:guess-language(())
+        let $translators := $TEI//tei:respStmt[tei:resp[. = 'Übersetzung']]/tei:name => string-join(', ')
+        return (
+            element tei:title {
+                concat(lang:get-language-string('translationBy',$lang), ' ', $translators)
+            }
+        )
+    }
+    return 
+    map {
+        'name' : 'translations',
+        'prefix' : substring(config:get-option('translationsIdPattern'), 1, 3),
+        'check' : function() as xs:boolean {
+            if($item castable as xs:string) then matches($item, config:wrap-regex('translationsIdPattern'))
+            else false()
+        },
+        'filter' : function() as document-node()* {
+            $item/root()/descendant::tei:text[@type = $text-types]/root()
+        },
+        'filter-by-person' : function($personID as xs:string) as document-node()* {
+            typeswitch($item) (: remove call to function `root()` when document-node()s are passed as input :)
+            case document-node()+ return $item//tei:*[contains(@key, $personID)][ancestor::tei:correspAction][not(ancestor-or-self::tei:note)]/root()
+            default return $item/root()//tei:*[contains(@key, $personID)][ancestor::tei:correspAction][not(ancestor-or-self::tei:note)]/root()
+        },
+        'filter-by-date' : function($dateFrom as xs:date?, $dateTo as xs:date?) as document-node()* {
+            $wdt:filter-by-date($item, $dateFrom, $dateTo)[parent::tei:correspAction]/root()
+        },
+        'sort' : function($params as map(*)?) as document-node()* {
+            if(sort:has-index('translations')) then ()
+            else (wdt:letters(())('init-sortIndex')()),
+            for $i in wdt:letters($item)('filter')() order by sort:index('translations', $i) ascending return $i
+        },
+        'init-collection' : function() as document-node()* {
+            crud:data-collection('translations')/descendant::tei:text[@type = $text-types]/root()
+        },
+        'init-sortIndex' : function() as item()* {
+            sort:create-index-callback('letters', wdt:letters(())('init-collection')(), function($node) {
+                let $normDate := query:get-normalized-date($node)
+                let $n :=  functx:pad-integer-to-length(($node//tei:title[@level='a'])[1]/data(.), 4)
+                return
+                    (if(exists($normDate)) then $normDate else 'xxxx-xx-xx') || $n
+            }, ())
+        },
+        'title' : function($serialization as xs:string) as item()? {
+            let $TEI := 
+                typeswitch($item)
+                case xs:string return crud:doc($item)/tei:TEI
+                case xs:untypedAtomic return crud:doc($item)/tei:TEI
+                case document-node() return $item/tei:TEI
+                default return $item/root()/tei:TEI
+            let $title-element := $constructTranslationHead($TEI) 
+            return
+                switch($serialization)
+                case 'txt' return str:normalize-space(replace(string-join(str:txtFromTEI($title-element, config:guess-language(())), ''), '\s*\n+\s*(\S+)', '. $1'))
+                case 'html' return wega-util:transform($title-element, doc(concat($config:xsl-collection-path, '/common_main.xsl')), config:get-xsl-params(())) 
+                default return wega-util:log-to-file('error', 'wdt:translations()("title"): unsupported serialization "' || $serialization || '"')
+        },
+        'memberOf' : ('unary-docTypes'),
+        'search' : ()
+    }
+};
+
 declare function wdt:writings($item as item()*) as map(*) {
     let $filter := function($docs as document-node()*) as document-node()* {
         $docs/root()/descendant::tei:text[range:eq(@type, ('performance-review', 'historic-news', 'concert_announcements', 'work-review', 'biographical', 'literature'))]/root() 
