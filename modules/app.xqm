@@ -1399,6 +1399,16 @@ declare
 
 declare 
     %templates:wrap
+    %templates:default("lang", "en")
+    function app:editors($node as node(), $model as map(*), $lang as xs:string) as element()* {
+        
+        <dt xmlns="http://www.w3.org/1999/xhtml">{lang:get-language-string('editors', $lang)}</dt>,
+		<dd xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space(string-join($model?editors, '; '))}</dd>
+        	
+};
+
+declare 
+    %templates:wrap
     function app:textSources($node as node(), $model as map(*)) as map(*) {
     let $textSources := query:text-sources($model?doc)
     let $textSourcesCount := count($textSources)
