@@ -2014,3 +2014,46 @@ declare function app:init-custom-switch($node as node(), $model as map(*)) as el
         $node/*
     }
 };
+
+declare function app:enclosure($node as node(), $model as map(*))  {
+    let $doc := $model('doc')
+    let $docID := $model('docID')
+    let $lang := $model('lang')
+    let $docType := $model('docType')
+    let $xslParams := config:get-xsl-params( map {
+            'dbPath' : document-uri($doc),
+            'docID' : $docID,
+            'transcript' : 'true',
+            'createSecNos' : ()
+            } )
+    let $xslt1 := doc(concat($config:xsl-collection-path, '/letters.xsl'))
+    let $enclosures := collection(config:get-option('dataCollectionPath'))//tei:relation[@name='isEnclosureOf'][@key=$model?docID]/root()
+    for $enclosure at $z in $enclosures
+    	let $textRoot := $enclosure//tei:text
+    	let $xslParams := config:get-xsl-params( map {
+            'dbPath' : document-uri($doc),
+            'docID' : $docID,
+            'transcript' : 'true',
+            'createSecNos' : (),
+            'enclosure' : 'true'
+            } )
+    	let $body := 
+	         if(functx:all-whitespace(<root>{$textRoot}</root>))
+	         then 
+	            element xhtml:p {
+	                    attribute class {'notAvailable'}
+	            }
+	         else (
+	             element xhtml:div {
+	                attribute class {'alert alert-primary text-center'},
+	         	        lang:get-language-string('previewDocument',$lang) || ' ',
+	         	        element xhtml:b {
+	         	            app:createDocLink($enclosure,lang:get-language-string('switchDocumentView',$lang),$lang,())
+	         	        }
+    	         	 },
+	               wega-util:transform($textRoot, $xslt1, $xslParams))
+	    return
+	        <div class="tab-pane fade" id="enclosure-{$z}">
+	          {wega-util:remove-elements-by-class(wega-util:remove-elements-by-class($body, 'apparatus'), 'noteMarker')}
+	        </div>
+};
