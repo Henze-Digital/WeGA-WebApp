@@ -2062,3 +2062,9 @@ declare
             <ul class="tei_simpleList">{$successionOutput}</ul>
         </div>)
 };
+
+declare function app:download-modal($node as node(), $model as map(*))  {
+		if(exists($model('doc')//tei:availability/tei:licence[. = 'noDownload']) = true())
+		then templates:include($node, $model, 'templates/includes/download-modal-restricted.html')
+		else templates:include($node, $model, 'templates/includes/download-modal-tei.html')
+};
