@@ -1995,3 +1995,11 @@ declare function app:init-custom-switch($node as node(), $model as map(*)) as el
         $node/*
     }
 };
+
+declare function app:zenodoDOIs($node as node(), $model as map(*)) {
+<li>
+	Zenodo: <a target="_blank" href="https://doi.org/{config:get-option('zenodoDoiData')}">Data</a> | 
+	<a target="_blank" href="https://doi.org/{config:get-option('zenodoDoiOdd')}">TEI-ODD</a> | 
+	<a target="_blank" href="https://doi.org/{config:get-option('zenodoDoiWebApp')}">WebApp</a>
+</li>
+};
