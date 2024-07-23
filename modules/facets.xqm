@@ -66,7 +66,8 @@ declare function facets:facets($nodes as node()*, $facet as xs:string, $max as x
     switch($facet)
     case 'textType' return facets:from-docType($nodes, $facet, $lang)
     case 'facsimile' return facets:facsimile($nodes, $facet, $lang)
-    default return facets:createFacets($nodes, $facet, $max, $lang)
+    case 'workType' return facets:workType($nodes, $facet, $lang)
+default return facets:createFacets($nodes, $facet, $max, $lang)
 };
 
 declare %private function facets:from-docType($collection as node()*, $facet as xs:string, $lang as xs:string) as array(*) {
@@ -92,6 +93,20 @@ declare %private function facets:facsimile($collection as node()*, $facet as xs:
     )
 };
 
+declare %private function facets:workType($collection as node()*, $facet as xs:string, $lang as xs:string) as array(*) {
+    
+    let $workTypes := ($collection//mei:work[parent::mei:workList]/@class, $collection//tei:textClass//tei:item) => distinct-values()
+    return
+        array {
+            for $workType in $workTypes
+                return 
+                    map {
+                        'value' : $workType,
+                        'label' : lang:get-language-string($workType, $lang),
+                        'frequency' : count($collection//mei:work[parent::mei:workList]/@class[.=$workType] | $collection//tei:textClass//tei:item[.=$workType])
+                    }
+        }
+};
 
 (:~
  : Create facets
@@ -131,7 +146,8 @@ declare %private function facets:display-term($facet as xs:string, $term as xs:s
     case 'facsimile' case 'keywords' case 'docLang' return lang:get-language-string($term, $lang)
     case 'repository' return facets:display-term-repository($term)
     case 'geonamesFeatureClass' return lang:get-language-string('geonamesFeatureClass_' || $term, $lang)
-    default return str:normalize-space($term)
+    case 'workType' return lang:get-language-string($term, $lang)    
+default return str:normalize-space($term)
 };
 
 (:~
