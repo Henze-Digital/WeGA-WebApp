@@ -328,6 +328,7 @@ declare function query:get-facets($collection as node()*, $facet as xs:string) a
     switch($facet)
     case 'sender' return $collection//tei:correspAction[range:eq(@type,'sent')]//@key[parent::tei:persName or parent::name or parent::tei:orgName]
     case 'addressee' return $collection//tei:correspAction[range:eq(@type,'received')]//@key[parent::tei:persName or parent::name or parent::tei:orgName]
+    case 'corresp' return $collection//tei:fileDesc/tei:titleStmt/tei:title[1]
     case 'docStatus' return $collection/*/@status | $collection//tei:revisionDesc/@status
     case 'placeOfSender' return $collection//tei:settlement[parent::tei:correspAction/@type='sent']/@key
     case 'placeOfAddressee' return $collection//tei:settlement[parent::tei:correspAction/@type='received']/@key
