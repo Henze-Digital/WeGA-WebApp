@@ -851,6 +851,16 @@ declare function api:validate-sender($model as map(*)) as map(*)? {
 }; 
 
 (:~
+ : Check parameter corresp
+ : multiple values allowed as input, either by providing multiple URL parameters
+ : or by sending a comma separated list as the value of one URL parameter
+~:)
+declare function api:validate-corresp($model as map(*)) as map(*)? {
+    if(every $i in $model?corresp ! tokenize(., ',') satisfies wdt:corresp($i)('check')()) then map { 'corresp': $model?corresp ! tokenize(., ',') }
+    else error($api:INVALID_PARAMETER, 'Unsupported value for parameter "corresp". It must be a corresp ID.' )
+}; 
+
+(:~
  : Check parameter textType
  : multiple values allowed as input, either by providing multiple URL parameters
  : or by sending a comma separated list as the value of one URL parameter
