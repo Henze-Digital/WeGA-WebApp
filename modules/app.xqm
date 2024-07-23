@@ -341,6 +341,32 @@ declare
 
 declare
     %templates:default("lang", "en")
+    function app:translation-tab($node as node(), $model as map(*), $lang as xs:string) as element()* {
+        let $trlDocs := collection(config:get-option('dataCollectionPath'))//tei:relation[@name='isTranslationOf'][@key=$model?docID]/root()
+        for $trlDoc at $z in $trlDocs
+            let $trlDocLang := $trlDoc//tei:profileDesc/tei:langUsage/tei:language/@ident => string()
+            let $trlDocLang := switch ($trlDocLang)
+                                case 'en' return 'gb'
+                                default return $trlDocLang
+            return
+                element {node-name($node)} {
+		        attribute class {'nav-item gradient-light'},
+                    element {'a'} {
+                        attribute class {'nav-link'},
+                        attribute href {'#translation-' || $z},
+                        attribute data-toggle {'tab'},
+                        attribute id {'translation-tab-' || $z},
+                        lang:get-language-string('translation', $lang),
+                        '&#160;',
+                        element span {
+                            attribute class {'fi fi-' || $trlDocLang}
+                        }
+                    }
+                }
+};
+
+declare
+    %templates:default("lang", "en")
     function app:tab($node as node(), $model as map(*), $lang as xs:string) as element() {
         (: Currently only needed for "PND Beacon Links" :)
         if($model('gnd')) then
