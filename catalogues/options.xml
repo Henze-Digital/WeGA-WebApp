@@ -25,7 +25,10 @@
         <entry xml:id="ODDversion">4.11.0</entry><!-- Versionsnummer der WeGA-ODD Schemata -->
         <entry xml:id="versionNews">A050194</entry>
         <entry xml:id="versionDate">2024-07-01</entry>
-        <entry xml:id="cmifID">e4c10c66-9b0b-4f2e-810c-669b0b2f2e20</entry>
+        <entry xml:id="zenodoDoiData">DOI-DATA</entry>
+    	<entry xml:id="zenodoDoiOdd">DOI-ODD</entry>
+    	<entry xml:id="zenodoDoiWebApp">DOI-WEBAPP</entry>
+		<entry xml:id="cmifID">e4c10c66-9b0b-4f2e-810c-669b0b2f2e20</entry>
     </div>
     <div xml:id="externalPNDResources">
         <entry xml:id="lease-duration">P7D</entry><!-- xs:dayTimeDuration -->
