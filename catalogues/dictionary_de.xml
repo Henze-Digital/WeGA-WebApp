@@ -138,6 +138,7 @@
     <entry xml:id="addDefault">hinzugefügt</entry>
     <entry xml:id="popoverTitle.add">Hinzufügung</entry>
     <entry xml:id="popoverTitle.subst">Ersetzung</entry>
+    <entry xml:id="popoverTitle.handshift">Schriftwechsel</entry>
     <!--<entry xml:id="substInline">Ersetzung in der Zeile</entry>
     <entry xml:id="substAbove">Ersetzung über der Zeile</entry>
     <entry xml:id="substBelow">Ersetzung unter der Zeile</entry>
@@ -159,7 +160,14 @@
     <entry xml:id="unclearDefault">unsichere Lesung</entry>
     <entry xml:id="gapDefault">unleserliche Stelle</entry><!-- Übertragung nicht möglich -->
     <entry xml:id="outofScope">außerhalb des Editionsrahmens</entry>
-    <entry xml:id="paperloss">Papierverlust</entry>
+    
+    <entry xml:id="handshiftManuscript">handschriftlich</entry>
+    <entry xml:id="handshiftTypescript">Typoskript</entry>
+    <entry xml:id="handNoteHeadManuscript">Manuskript</entry>
+    <entry xml:id="handNoteHeadTypescript">Typoskript</entry>
+    <entry xml:id="handNoteManuscript">Handschrift</entry>
+    <entry xml:id="handNoteTypescript">Maschinenschrift</entry>
+	<entry xml:id="paperloss">Papierverlust</entry>
     <entry xml:id="smoke">Beschädigung durch Rauch oder Feuer</entry>
     <entry xml:id="seal">Beschädigung durch Siegel(einriss)</entry>
     <entry xml:id="water">Wasserschaden</entry>
@@ -666,4 +674,39 @@
     <entry xml:id="geonamesFeatureClass_S">Gebäude</entry>
     <entry xml:id="geonamesFeatureClass_T">Berg, Hügel</entry>
     <entry xml:id="geonamesFeatureClass_V">Wald, Heide</entry>
+	
+	<entry xml:id="further">Folgend</entry>
+	
+	<!-- colors -->
+	<entry xml:id="color.blue">blau</entry>
+	<entry xml:id="color.blue.light">hellblau</entry>
+	<entry xml:id="color.blue.dark">dunkelblau</entry>
+	<entry xml:id="color.dark">dunkel</entry>
+	<entry xml:id="color.black">schwarz</entry>
+	<entry xml:id="color.pink">pink</entry>
+	<entry xml:id="color.red">rot</entry>
+	<entry xml:id="color.red.light">hellrot</entry>
+	<entry xml:id="color.red.dark">dunkerot</entry>
+	<entry xml:id="color.orange">orange</entry>
+	<entry xml:id="color.green">grün</entry>
+	<entry xml:id="color.green.light">hellgrün</entry>
+	<entry xml:id="color.green.dark">dunkelgrün</entry>
+	<entry xml:id="color.turquoise">türkis (Cyan)</entry>
+	<entry xml:id="color.turquoise-green">türkisgrün</entry>
+	<entry xml:id="color.turquoise-green.dark">dunkeles türkisgrün</entry>
+	<entry xml:id="color.violet">violett</entry>
+	<entry xml:id="color.lilac">lila</entry>
+	<entry xml:id="color.ocher">ocker</entry>
+	
+	<!-- medium -->
+	<entry xml:id="medium.pencil">Bleistift</entry>
+	<entry xml:id="medium.pencil.colored">Buntstift</entry>
+	<entry xml:id="medium.pencil.ink">Tuschestift</entry>
+	<entry xml:id="medium.pen">Füller</entry>
+	<entry xml:id="medium.pen.felt">Filzstift/Fineliner</entry>
+	<entry xml:id="medium.pen.ball">Kugelschreiber</entry>
+	<entry xml:id="medium.ribbon">Farbband (Schreibmaschine)</entry>
+	
+	<!-- hands -->
+	<entry xml:id="handNotes">Schreibstile</entry>
 </dictionary>
