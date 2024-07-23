@@ -341,6 +341,25 @@ declare
 
 declare
     %templates:default("lang", "en")
+    function app:enclosure-tab($node as node(), $model as map(*), $lang as xs:string) as element()* {
+        let $enclosures := collection(config:get-option('dataCollectionPath'))//tei:relation[@name='isEnclosureOf'][@key=$model?docID]/root()
+	    for $enclosure at $z in $enclosures
+		    return
+		        element {node-name($node)} {
+		        attribute class {'nav-item gradient-light'},
+                    element {'a'} {
+                       attribute class {'nav-link'},
+                       attribute href {'#enclosure-' || $z},
+                       attribute data-toggle {'tab'},
+                       attribute id {'enclosure-tab-' || $z},
+                       lang:get-language-string('enclosure', $lang),
+                       if(count($enclosures) > 1) then(' (' || $z || ')') else()
+                    }
+                }
+};
+
+declare
+    %templates:default("lang", "en")
     function app:tab($node as node(), $model as map(*), $lang as xs:string) as element() {
         (: Currently only needed for "PND Beacon Links" :)
         if($model('gnd')) then
