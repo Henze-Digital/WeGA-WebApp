@@ -2036,3 +2036,64 @@ declare function app:init-custom-switch($node as node(), $model as map(*)) as el
         $node/*
     }
 };
+
+declare function app:translation($node as node(), $model as map(*))  {
+    let $doc := $model('doc')
+    let $docID := $model('docID')
+    let $docType := $model('docType')
+    let $lang := $model('lang')
+    let $trlDocs := collection(config:get-option('dataCollectionPath'))//tei:relation[@name='isTranslationOf'][@key=$model?docID]/root()
+    let $xslt1 := doc(concat($config:xsl-collection-path, '/letters.xsl'))
+    for $trlDoc at $z in $trlDocs
+        let $trlLang := $trlDoc//tei:profileDesc/tei:langUsage/tei:language/@ident => string()
+        let $textRoot := $trlDoc//tei:text
+        let $xslParams := config:get-xsl-params( map {
+                'dbPath' : document-uri($doc),
+                'docID' : $docID,
+                'lang' : $trlLang,
+                'transcript' : 'true',
+                'createSecNos' : ()
+                } )
+        let $head := (
+                         if($config:isDevelopment)
+                         then(
+                             element xhtml:p {
+                                attribute class {'float-right font-italic'},
+                    			'ID: ' || $trlDoc/tei:TEI/@xml:id/string()
+                                }
+                         )
+                         else (),
+                         if($trlDoc//tei:notesStmt/tei:note[@type="editorial"][1])
+                         then(
+                                element xhtml:div {
+            	                attribute class {'alert alert-primary text-center'},
+            	         	        lang:get-language-string('generalRemark',$lang) || ': ',
+            	         	        element xhtml:span {
+            	         	            wega-util:transform($trlDoc//tei:notesStmt/tei:note[@type="editorial"][1], $xslt1, $xslParams)
+            	         	        }
+                	         	 }
+                             )
+                         else()
+                     )
+    
+        let $body := 
+             if(functx:all-whitespace(<root>{$textRoot}</root>))
+             then 
+                element xhtml:p {
+                        attribute class {'notAvailable'}
+                }
+             else (
+                wega-util:transform($textRoot, $xslt1, $xslParams)
+            )
+        let $foot := element xhtml:p {
+                        attribute class {'float-right font-italic'},
+            			lang:get-language-string('translationBy',$lang),
+                        ' ',
+                        $textRoot/root()//tei:respStmt[tei:resp[. = 'Übersetzung']]/tei:name => string-join('/')
+                        }
+        return
+            <div class="tab-pane fade" id="translation-{$z}">
+              {$head,(wega-util:remove-elements-by-class(wega-util:remove-elements-by-class($body, 'apparatus'), 'noteMarker'),$foot)}
+            </div>
+    
+};
