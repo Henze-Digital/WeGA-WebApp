@@ -44,7 +44,8 @@ declare variable $search:valid-params := (
     'undated',
     'orderby',
     'orderdir',
-    'orgs'
+    'orgs',
+    'workType'
 );
 
 (:~
@@ -327,6 +328,7 @@ declare %private function search:filter-result($collection as document-node()*, 
             else if($filter = 'textType') then search:textType-filter($collection, $filters($filter)[1])
             else if($filter = 'hideRevealed') then search:revealed-filter($collection)
             else if($filter = 'facsimile') then search:facsimile-filter($collection, $filters($filter)[1])
+            else if($filter = 'corresp') then search:corresp-filter($collection, $filters($filter)[1])
             (: exact search for terms -> range:eq :)
             else if($filter = ('journals', 'forenames', 'surnames', 'sex', 'occupations')) then query:get-facets($collection, $filter)[range:eq(.,$filters($filter)[1])]/root()
             (: range:contains for tokens within key values  :)
@@ -394,6 +396,12 @@ declare %private function search:facsimile-filter($collection as document-node()
             default return $facsimiles?*[.?value='without']?documents
 };
 
+declare %private function search:corresp-filter($collection as document-node()*, $corresp as xs:string*) as document-node()* {
+    for $each in $corresp
+    return
+        $collection//tei:relation[@name='correspondence'][@key=$each]/root()
+};
+
 (:~
  : 
 ~:)
@@ -412,7 +420,7 @@ declare %private function search:get-earliest-date($coll as document-node()*, $d
 (:~
  : 
 ~:)
-declare %private function search:get-latest-date($coll as document-node()*, $docType as xs:string) as xs:string? {
+declare function search:get-latest-date($coll as document-node()*, $docType as xs:string) as xs:string? {
     if(count($coll) gt 0) then 
         switch ($docType)
         case 'news' case 'biblio' case 'letters' case 'writings' case 'diaries' case 'documents' return
