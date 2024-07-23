@@ -224,6 +224,14 @@ declare
     %templates:default("lang", "en")
     function app:breadcrumb-register2($node as node(), $model as map(*), $lang as xs:string) as element(xhtml:a)? {
         if($model('docType') = 'indices') then ()
+        else if ($model('docType') = 'corresp')
+        then (
+            element {node-name($node)} {
+                $node/@*[not(local-name(.) eq 'href')],
+                attribute href {config:link-to-current-app(controller:path-to-register('corresp', $lang))},
+                lang:get-language-string($model('docType'), $lang)
+            }
+            )
         else 
             element {node-name($node)} {
                 $node/@*,
