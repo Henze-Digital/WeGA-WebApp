@@ -1995,3 +1995,16 @@ declare function app:init-custom-switch($node as node(), $model as map(*)) as el
         $node/*
     }
 };
+
+declare function app:legalNotice($node as node(), $model as map(*)) as map(*) {
+	map {
+	    'legalNotice' : <p>{$model('doc')//tei:licence[@n='legalNote']/text()}</p>
+	}
+};
+
+declare function app:credits($node as node(), $model as map(*)) as map(*) {
+	map {
+		'credits' : <p>{$model('doc')//tei:licence[@n='credits']/text()}</p>
+	}
+};
+
