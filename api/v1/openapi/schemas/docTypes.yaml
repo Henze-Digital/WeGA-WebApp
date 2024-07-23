@@ -12,6 +12,7 @@ items:
     - persons
     - places
     - thematicCommentaries
+    - translations
     - var
     - works
     - writings
