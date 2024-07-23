@@ -1408,10 +1408,25 @@ declare
     %templates:wrap
     %templates:default("lang", "en")
     function app:respStmts($node as node(), $model as map(*), $lang as xs:string) as element()* {
-        for $respStmt in $model?respStmts
-        return (
-            <dt xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space($respStmt/tei:resp)}</dt>,
-            <dd xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space(string-join($respStmt/tei:name, '; '))}</dd>
+        functx:distinct-deep(
+        let $respStmts := for $respStmt in $model?respStmts
+        					return (
+            					<dt xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space($respStmt/tei:resp)}</dt>,
+					            <dd xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space(string-join($respStmt/tei:name, '; '))}</dd>
+        							)
+        let $trlDocs := collection(config:get-option('dataCollectionPath'))//tei:relation[@name='isTranslationOf'][@key=$model?docID]/root()
+        for $trlDoc in $trlDocs
+            let $trlRespStmt := $trlDoc//tei:respStmt[tei:resp[.='Übersetzung']]
+            let $trlDocLang := $trlDoc//tei:profileDesc/tei:langUsage/tei:language/@ident => string()
+            let $trlDocLang := switch ($trlDocLang)
+                                case 'en' return 'gb'
+                                default return $trlDocLang
+            let $trlLang := element span { attribute class {'fi fi-' || $trlDocLang}}
+            let $respStmtsRelated := 
+            	(<dt xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space($trlRespStmt/tei:resp), '&#160;', $trlLang}</dt>,
+                <dd xmlns="http://www.w3.org/1999/xhtml">{str:normalize-space(string-join($trlRespStmt/tei:name, '; '))}</dd>)
+        return
+            ($respStmts, $respStmtsRelated)
         )
 };
 
