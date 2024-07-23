@@ -439,17 +439,19 @@ $.fn.preview_popover = function() {
     let url = $(this).attr('data-ref').replace('.html', '/popover.html'),
         container = $(this),
         popover_node = container.parents('div.popover'),
+        popover_node_id = popover_node.attr('id'),
         popover_data;
     $.ajax({
         url: url,
         success: function(response){
             const source = $(response),
                 title = source.find('h3').html(),
-                content = source.children();
+                content = source.children(),
+                cert = $(`a[aria-describedby="${popover_node_id}"]`).attr('certainty');
             // special rule for previews without title, e.g. biblio  
             if(undefined===title) { $('.item-title', container).remove(); }
             // default is to copy the non-empty title from the preview
-            else { $('.item-title', container).html(title); }
+            else { $('.item-title', container).html(title + cert); console.log(cert);}
             
             $('.item-content', container).html(content);
             $('h3.media-heading', container).remove(); // remove relicts of headings
