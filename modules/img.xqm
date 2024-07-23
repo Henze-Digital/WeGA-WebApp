@@ -155,6 +155,21 @@ declare function img:iconographyImage($node as node(), $model as map(*)) as elem
 };
 
 (:~
+ : Helper function for img:iconography()
+ : Creates the iconography for corresp
+ :
+ : @author Dennis Ried
+~:)
+declare %private function img:iconography4corresp($node as node(), $model as map(*), $lang as xs:string) as map(*) {
+    let $wikidata-images := img:wikidata-images($model, $lang)
+    return 
+    map { 
+        'iconographyImages' : $wikidata-images,
+        'portrait' : ($wikidata-images, img:get-generic-portrait($model, $lang) )[1]
+    }
+};
+
+(:~
  : Helper function for grabbing images from wikidata
  :
  : @author Peter Stadler 
@@ -493,7 +508,8 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
         else if(config:is-place($model('docID'))) then 'place'
         else if($model('doc')//mei:term/data(@class) = 'http://d-nb.info/standards/elementset/gnd#MusicalWork') then 'musicalWork'
         else if(config:is-work($model('docID')) and not($model('doc')//mei:term/data(@class) = 'http://d-nb.info/standards/elementset/gnd#MusicalWork')) then 'otherWork'
-        else $model('doc')//tei:sex/text()
+else if(config:is-corresp($model('docID'))) then 'corresp'        
+else $model('doc')//tei:sex/text()
     let $caption :=
         if(config:is-person($model('docID')))
         then 'no portrait available'
@@ -513,6 +529,7 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
                     case 'place' return config:link-to-current-app('resources/img/icons/icon_places.png')
                     case 'musicalWork' return config:link-to-current-app('resources/img/icons/icon_musicalWorks.png')
                     case 'otherWork' return config:link-to-current-app('resources/img/icons/icon_works.png')
+                    case 'corresp' return config:link-to-current-app('resources/img/icons/icon_corresp.svg')
                     default return config:link-to-current-app('resources/img/icons/icon_persons.png')
                 default return 
                     switch($sex)
@@ -522,7 +539,7 @@ declare %private function img:get-generic-portrait($model as map(*), $lang as xs
                     case 'place' return config:link-to-current-app('resources/img/icons/icon_places_gross.png')
                     case 'musicalWork' return config:link-to-current-app('resources/img/icons/icon_musicalWorks_gross.png')
                     case 'otherWork' return config:link-to-current-app('resources/img/icons/icon_works_gross.png')
-                    default return config:link-to-current-app('resources/img/icons/icon_person_unbekannt_gross.png')
+                    case 'corresp' return config:link-to-current-app('resources/img/icons/icon_corresp.svg')                       default return config:link-to-current-app('resources/img/icons/icon_person_unbekannt_gross.png')
             }
         }
 };
