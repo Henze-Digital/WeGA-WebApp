@@ -149,6 +149,11 @@
         <xsl:sequence select="matches($docID, wega:wrap-regex('addendaIdPattern'))"/>
     </xsl:function>
     
+	<xsl:function name="wega:isCorresp" as="xs:boolean">
+		<xsl:param name="docID" as="xs:string"/>
+		<xsl:sequence select="matches($docID, wega:wrap-regex('correspIdPattern'))"/>
+	</xsl:function>
+    
     <xsl:function name="wega:get-doctype-by-id" as="xs:string?">
         <xsl:param name="docID" as="xs:string"/>
         <xsl:choose>
@@ -196,6 +201,9 @@
             </xsl:when>
             <xsl:when test="wega:isAddendum($docID)">
                 <xsl:value-of select="'addenda'"/>
+            </xsl:when>
+            <xsl:when test="wega:isCorresp($docID)">
+                <xsl:value-of select="'corresp'"/>
             </xsl:when>
             <xsl:otherwise/>
         </xsl:choose>
