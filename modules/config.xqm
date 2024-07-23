@@ -185,6 +185,7 @@ declare function config:set-option($key as xs:string, $value as xs:string) as xs
  : Serves as a general validation service for our ID taxonomy
  :
  : @author Peter Stadler
+ : @author Dennis Ried
  : @param $id 
  : @return xs:string document type
 :)
@@ -204,6 +205,7 @@ declare function config:get-doctype-by-id($id as xs:string?) as xs:string? {
     else if(config:is-addenda($id)) then 'addenda'
     else if(config:is-thematicCommentary($id)) then 'thematicCommentaries'
     else if(config:is-document($id)) then 'documents'
+    else if(config:is-corresp($id)) then 'corresp'
     else ()
 };
 
@@ -267,6 +269,17 @@ declare function config:is-writing($docID as xs:string?) as xs:boolean {
 :)
 declare function config:is-letter($docID as xs:string?) as xs:boolean {
     matches($docID, config:wrap-regex('lettersIdPattern'))
+};
+
+(:~
+ : Checks whether a given id matches the HenDi pattern of correspondence ids
+ :
+ : @author Dennis Ried
+ : @param $docID the id to test as string
+ : @return xs:boolean
+:)
+declare function config:is-corresp($docID as xs:string?) as xs:boolean {
+    matches($docID, config:wrap-regex('correspIdPattern'))
 };
 
 (:~
