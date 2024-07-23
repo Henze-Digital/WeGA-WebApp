@@ -158,7 +158,8 @@ declare function ct:place($input as element()) as element(tei:placeName) {
 
 declare function ct:date($input as element()) as element(tei:date) {
     element {QName('http://www.tei-c.org/ns/1.0', local-name($input))} {
-        $input/@*[not(local-name(.) = ('n', 'calendar'))]
+        $input/@*[not(local-name(.) = ('n', 'calendar', 'type'))],
+        if($input/@type = 'editor') then(attribute {'evidence'}{'conjectured'}) else()
         (: 
         no content allowed here with the schema at 
         https://raw.githubusercontent.com/TEI-Correspondence-SIG/CMIF/master/schema/cmi-customization.rng  
