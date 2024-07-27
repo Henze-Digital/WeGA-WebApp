@@ -31,6 +31,29 @@
          <xsl:if test="wega:isNews($docID)">
             <xsl:attribute name="style">display:none</xsl:attribute>
          </xsl:if>
+      	<xsl:variable name="theHandNotes" select="$doc//tei:profileDesc//tei:handNote"/>
+      	<xsl:if test="$theHandNotes">
+      		<xsl:element name="h3">
+      			<xsl:attribute name="class">media-heading</xsl:attribute>
+      			<xsl:value-of select="wega:getLanguageString('handNotes', $lang)"/>
+      		</xsl:element>
+      	</xsl:if>
+      	<xsl:element name="ul">
+      		<xsl:attribute name="class">apparatus handNotes</xsl:attribute>
+      		<xsl:for-each select="$theHandNotes">
+      			<xsl:element name="li">
+      				<xsl:element name="div">
+      					<xsl:attribute name="class">row</xsl:attribute>
+      					<xsl:element name="div">
+      						<xsl:attribute name="class">col-1 text-nowrap</xsl:attribute>
+      						<xsl:number count="$theHandNotes" level="any"/>
+      						<xsl:text>.</xsl:text>
+      					</xsl:element>
+      					<xsl:apply-templates select="." mode="apparatus"/>
+      				</xsl:element>
+      			</xsl:element>
+      		</xsl:for-each>
+      	</xsl:element>
          <xsl:if test="$textConstitutionNodes or $doc//tei:notesStmt/tei:note[@type='textConst']">
             <xsl:element name="h3">
                <xsl:attribute name="class">media-heading</xsl:attribute>
@@ -241,6 +264,10 @@
                   <xsl:text> </xsl:text>
                   <xsl:value-of select="wega:getLanguageString('delErased', $lang)"/>
                </xsl:when>
+            </xsl:choose>
+         <xsl:choose>
+                <xsl:when test="tei:add/@hand"><xsl:sequence select="hendi:getHandFeatures(tei:add)"/></xsl:when>
+                <xsl:otherwise><xsl:sequence select="hendi:getHandFeatures(.)"/></xsl:otherwise>
             </xsl:choose>
          </xsl:with-param>
       </xsl:call-template>
@@ -569,6 +596,7 @@
          </xsl:with-param>
          <xsl:with-param name="explanation">
             <xsl:sequence select="(wega:getLanguageString('choiceAbbr', $lang),' ', wega:enquote($expan))"/>
+         <xsl:sequence select="hendi:getHandFeatures(.)"/>
          </xsl:with-param>
       </xsl:call-template>
    </xsl:template>
@@ -757,6 +785,9 @@
             <xsl:when test="$counter-param='note'">
                <xsl:number count="tei:note[@type=('commentary', 'definition')] | tei:choice" level="any"/>
             </xsl:when>
+         	<xsl:when test="$counter-param='handNote'">
+         		<xsl:number count="tei:handNote" level="any"/>
+         	</xsl:when>
             <xsl:otherwise>
             	<xsl:number count="tei:subst | tei:add[not(parent::tei:subst)] | tei:gap[not(@reason='outOfScope' or parent::tei:del)] | tei:sic[not(parent::tei:choice)] | tei:del[not(parent::tei:subst)] | tei:unclear[not(parent::tei:choice)] | tei:note[@type='textConst'] | tei:supplied[parent::tei:damage] | tei:handShift" level="any"/>
             </xsl:otherwise>
